@@ -8,6 +8,8 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
+
 import java.util.List;
 
 @Path("/orders")
@@ -18,15 +20,21 @@ public class OrderResource {
     OrderService orderService;
 
     @POST
+    public Response createOrder(Order order) {
+        orderService.createOrder(order);
+        return Response.status(Response.Status.CREATED).entity(order).build();
+    }
+
+    @POST
     @Path("/{orderId}/items")
-    public Response addItemToOrder(@PathParam("orderId") long orderId, OrderItem item) {
+    public Response addItemToOrder(@PathParam("orderId") Long orderId, OrderItem item) {
         orderService.addItemToOrder(orderId,item);
         return Response.ok().build();
     }
 
     @PUT
     @Path("/{orderId}/status")
-    public Response updateOrderStatus(@PathParam("orderId") long orderId, String status) {
+    public Response updateOrderStatus(@PathParam("orderId") Long orderId, String status) {
         orderService.updateOrderStatus(orderId,status);
         return Response.ok().build();
     }
@@ -38,7 +46,7 @@ public class OrderResource {
 
     @GET
     @Path("/{orderId}")
-    public Order getOrderById(@PathParam("orderId") long orderId) {
+    public Order getOrderById(@PathParam("orderId") Long orderId) {
         return orderService.findOrderById(orderId);
     }
 }
